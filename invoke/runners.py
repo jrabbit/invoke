@@ -250,6 +250,10 @@ class Runner(object):
             When not ``None``, this parameter will override that auto-detection
             and force, or disable, echoing.
 
+        :param bool set_title:
+            Set the terminal's title to the running command. Supports tmux,
+            screen, etc.
+            
         :returns:
             `Result`, or a subclass thereof.
 
@@ -281,6 +285,12 @@ class Runner(object):
         # Echo running command
         if opts["echo"]:
             print("\033[1;37m{}\033[0m".format(command))
+
+        if opts["set_title"]:
+            if WINDOWS:
+                subprocess.call("title {}".format(command), shell=True)
+            else:
+                print("set title enabled") # Set title in tmux
         # Start executing the actual command (runs in background)
         self.start(command, shell, env)
         # Arrive at final encoding if neither config nor kwargs had one
